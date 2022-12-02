@@ -17,7 +17,7 @@ public class RedundantConnection
     {
         /// Solving this problem with union find algorithm.
         private int[] parents;
-        public int[] findRedundantConnection(int[][] edges)
+        /*public int[] findRedundantConnection(int[][] edges)
         {
             for (int i = edges.length - 1; i >= 0; i--)
             {
@@ -63,6 +63,38 @@ public class RedundantConnection
             {
                 if (parents[i] == currentNodeVal) parents[i] = newParentVal;
             }
+        }*/
+
+        /// Solving this problem with union find algorithm. (More efficient way)
+        public int[] findRedundantConnection(int[][] edges)
+        {
+            parents = new int[edges.length];
+            for (int i = 0; i < parents.length; i++) parents[i] = i;
+
+            for (int[] edge : edges)
+            {
+                if (find(edge[0] - 1) == find(edge[1] - 1)) return edge;
+                union(edge[1] - 1, edge[0] - 1);
+            }
+
+            return edges[0];
         }
+
+        private int find(int node)
+        {
+            return parents[node];
+        }
+
+        private void union(int node, int parent)
+        {
+            int newParentVal = parents[parent];
+            int currentNodeVal = parents[node];
+
+            for (int i = 0; i < parents.length; i++)
+            {
+                if (parents[i] == currentNodeVal) parents[i] = newParentVal;
+            }
+        }
+
     }
 }
