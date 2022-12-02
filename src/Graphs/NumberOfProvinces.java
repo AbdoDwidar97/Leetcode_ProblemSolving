@@ -10,8 +10,8 @@ public class NumberOfProvinces
     public static void main(String[] args)
     {
         Solution solution = new Solution();
-        System.out.println(solution.findCircleNum(new int[][]{{1,1,0}, {1,1,0}, {0,0,1}}));
-        System.out.println(solution.findCircleNum(new int[][]{{1,0,0}, {0,1,0}, {0,0,1}}));
+        System.out.println(solution.findCircleNum2(new int[][]{{1,1,0}, {1,1,0}, {0,0,1}}));
+        System.out.println(solution.findCircleNum2(new int[][]{{1,0,0}, {0,1,0}, {0,0,1}}));
     }
 
     private static class Solution
@@ -46,6 +46,51 @@ public class NumberOfProvinces
             }
 
             return numOfProvinces;
+        }
+
+        /// ---------------------- Union Find Way ------------------------------
+
+        private int [] parents;
+        public int findCircleNum2(int[][] isConnected)
+        {
+            int numberOfComponents = isConnected.length;
+            parents = new int[isConnected.length];
+
+            for (int i = 0; i < isConnected.length; i++) parents[i] = i;
+
+            for (int i = 0; i < isConnected.length; i++)
+            {
+                for (int j = 0; j < isConnected.length; j++)
+                {
+                    if (i != j && isConnected[i][j] == 1)
+                    {
+                        if (find(i) != find(j))
+                        {
+                            union(j, i);
+                            numberOfComponents--;
+                        }
+                    }
+                }
+            }
+
+
+            return numberOfComponents;
+        }
+
+        private int find(int node)
+        {
+            return parents[node];
+        }
+
+        private void union(int node, int parent)
+        {
+            int parentVal = parents[parent];
+            int nodeParent = parents[node];
+
+            for (int i = 0; i < parents.length; i++)
+            {
+                if (parents[i] == nodeParent) parents[i] = parentVal;
+            }
         }
     }
 }
