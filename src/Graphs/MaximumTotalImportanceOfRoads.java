@@ -1,5 +1,7 @@
 package Graphs;
 
+import java.util.Arrays;
+
 public class MaximumTotalImportanceOfRoads
 {
     public static void main(String[] args)
@@ -12,8 +14,21 @@ public class MaximumTotalImportanceOfRoads
     {
         public long maximumImportance(int n, int[][] roads)
         {
-            /// solution here ...
-            return Long.MAX_VALUE;
+            long result = 0;
+            long itr = 1;
+            long[] ranks = new long[n];
+
+            for (int[] road : roads)
+            {
+                ranks[road[0]]++;
+                ranks[road[1]]++;
+            }
+
+            Arrays.sort(ranks);
+
+            for (long rank : ranks) result += rank * itr++;
+
+            return result;
         }
     }
 }
