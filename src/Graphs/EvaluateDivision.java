@@ -19,7 +19,11 @@ public class EvaluateDivision
         public double[] calcEquation(List<List<String>> equations, double[] values, List<List<String>> queries)
         {
             /// Solution here ...
-            return null;
+            double x = 1.5;
+            double y = 1.0 / x;
+            double z = 1.5 * 2.5;
+            System.out.println(z);
+            return new double[]{};
         }
     }
 }
