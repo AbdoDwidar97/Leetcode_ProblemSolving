@@ -22,6 +22,13 @@ public class EvaluateDivision
         List<List<String>> queries = List.of(Arrays.asList("a", "b"), Arrays.asList("e", "e"), Arrays.asList("x", "x"));
         double[] result = solution.calcEquation(equations, new double[]{4.0, 3.0}, queries);
         Arrays.stream(result).forEach(System.out::println);
+
+        /// ------------------------------------------------------------------
+
+        /*List<List<String>> equations = List.of(Arrays.asList("a","b"), Arrays.asList("c","b"), Arrays.asList("d","b"), Arrays.asList("w","x"), Arrays.asList("y","x"), Arrays.asList("z","x"), Arrays.asList("w","d"));
+        List<List<String>> queries = List.of(Arrays.asList("a", "c"), Arrays.asList("b", "c"), Arrays.asList("a", "e"), Arrays.asList("a", "a"), Arrays.asList("x", "x"), Arrays.asList("a", "z"));
+        double[] result = solution.calcEquation(equations, new double[]{2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0}, queries);
+        Arrays.stream(result).forEach(System.out::println);*/
     }
 
     private static class Solution
@@ -97,10 +104,29 @@ public class EvaluateDivision
             return parents[nodeIdx];
         }
 
+        private void union2(int nodeIdx, int parentIdx)
+        {
+            if (parents[nodeIdx] != nodeIdx) {
+                // parents[parentIdx] = nodeIdx;
+                updateParents(parents[nodeIdx], nodeIdx);
+                parents[parentIdx] = nodeIdx;
+            }
+            else parents[nodeIdx] = parentIdx;
+        }
+
         private void union(int nodeIdx, int parentIdx)
         {
-            if (parents[nodeIdx] != nodeIdx) parents[parentIdx] = nodeIdx;
-            else parents[nodeIdx] = parentIdx;
+            int nodeRootIdx = find(nodeIdx);
+            int parentRootIdx = find(parentIdx);
+
+            parents[nodeRootIdx] = parentRootIdx;
+        }
+
+        private void updateParents(int parentIdx, int currentIdx)
+        {
+            if (parents[parentIdx] == parentIdx) return;
+            updateParents(parents[parentIdx], parentIdx);
+            parents[parentIdx] = currentIdx;
         }
 
         private double findValue(int source, int target, double totalVal)
