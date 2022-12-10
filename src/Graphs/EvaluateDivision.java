@@ -1,9 +1,6 @@
 package Graphs;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class EvaluateDivision
 {
@@ -34,113 +31,73 @@ public class EvaluateDivision
     private static class Solution
     {
         private HashMap<String, Integer> nodesAddress = new HashMap<>();
-        private int[] parents;
-        private double [][] graph;
+        private double[][] graph;
         public double[] calcEquation(List<List<String>> equations, double[] values, List<List<String>> queries)
         {
             double[] result = new double[queries.size()];
-            buildNodeAddresses(equations);
+            buildNodeAddress(equations);
             buildGraph(equations, values);
 
-            for (int i = 0; i < result.length; i++)
+            for (int i = 0; i < queries.size(); i++)
             {
-                List<String> q = queries.get(i);
-                String node1 = q.get(0);
-                String node2 = q.get(1);
-
-                if (!nodesAddress.containsKey(node1) || !nodesAddress.containsKey(node2)) result[i] = -1;
-                else
+                if (nodesAddress.containsKey(queries.get(i).get(0)) && nodesAddress.containsKey(queries.get(i).get(1)))
                 {
-                    if (find(nodesAddress.get(node1)) != find(nodesAddress.get(node2))) result[i] = -1;
-                    else
-                    {
-                        int target = find(nodesAddress.get(node1));
-                        double value1 = findValue(nodesAddress.get(node1), target, 1.0);
-                        double value2 = findValue(nodesAddress.get(node2), target, 1.0);
+                    int aIdx = nodesAddress.get(queries.get(i).get(0));
+                    int bIdx = nodesAddress.get(queries.get(i).get(1));
 
-                        result[i] = value2 / value1;
-                    }
+                    double valueDfs = getValueDfs(aIdx, bIdx, 1.0, new HashSet<>());
+                    if (valueDfs > 0.0) result[i] = valueDfs;
+                    else result[i] = -1.0;
                 }
+                else result[i] = -1.0;
             }
 
             return result;
         }
 
-        private void buildNodeAddresses(List<List<String>> equations)
+        private double getValueDfs(int nodeFrom, int nodeTo, double totalValue, HashSet<Integer> visitedNodes)
         {
-            int nodesNumber = 0;
+            visitedNodes.add(nodeFrom);
+            if (nodeFrom == nodeTo) return totalValue;
+
+            double totalSum = 0.0;
+            for (int i = 0; i < graph[nodeFrom].length; i++)
+            {
+                double child = graph[nodeFrom][i];
+                if (child > 0.0 && !visitedNodes.contains(i))
+                {
+                    totalSum += getValueDfs(i, nodeTo, totalValue * child, visitedNodes);
+                }
+            }
+
+            return totalSum;
+        }
+
+        private void buildNodeAddress(List<List<String>> equations)
+        {
+            int numOfNodes = 0;
             for (List<String> edge : equations)
             {
-                if (!nodesAddress.containsKey(edge.get(0))) nodesAddress.put(edge.get(0), nodesNumber++);
-                if (!nodesAddress.containsKey(edge.get(1))) nodesAddress.put(edge.get(1), nodesNumber++);
+                String a = edge.get(0);
+                String b = edge.get(1);
+
+                if (!nodesAddress.containsKey(a)) nodesAddress.put(a, numOfNodes++);
+                if (!nodesAddress.containsKey(b)) nodesAddress.put(b, numOfNodes++);
             }
         }
 
         private void buildGraph(List<List<String>> equations, double[] values)
         {
             graph = new double[nodesAddress.size()][nodesAddress.size()];
-            parents = new int[nodesAddress.size()];
-
-            for (int i = 0; i < parents.length; i++) parents[i] = i;
 
             for (int i = 0; i < values.length; i++)
             {
-                List<String> edge = equations.get(i);
-                int parentIdx = nodesAddress.get(edge.get(0));
-                int nodeIdx = nodesAddress.get(edge.get(1));
+                int aIdx = nodesAddress.get(equations.get(i).get(0));
+                int bIdx = nodesAddress.get(equations.get(i).get(1));
 
-                graph[parentIdx][nodeIdx] = values[i];
-                graph[nodeIdx][parentIdx] = 1.0 / values[i];
-
-                if (find(nodeIdx) != find(parentIdx)) union(nodeIdx, parentIdx);
+                graph[aIdx][bIdx] = values[i];
+                graph[bIdx][aIdx] = 1.0 / values[i];
             }
-        }
-
-        private int find(int nodeIdx)
-        {
-            if (parents[nodeIdx] != nodeIdx)
-                return find(parents[nodeIdx]);
-
-            return parents[nodeIdx];
-        }
-
-        private void union2(int nodeIdx, int parentIdx)
-        {
-            if (parents[nodeIdx] != nodeIdx) {
-                // parents[parentIdx] = nodeIdx;
-                updateParents(parents[nodeIdx], nodeIdx);
-                parents[parentIdx] = nodeIdx;
-            }
-            else parents[nodeIdx] = parentIdx;
-        }
-
-        private void union(int nodeIdx, int parentIdx)
-        {
-            int nodeRootIdx = find(nodeIdx);
-            int parentRootIdx = find(parentIdx);
-
-            parents[nodeRootIdx] = parentRootIdx;
-        }
-
-        private void updateParents(int parentIdx, int currentIdx)
-        {
-            if (parents[parentIdx] == parentIdx) return;
-            updateParents(parents[parentIdx], parentIdx);
-            parents[parentIdx] = currentIdx;
-        }
-
-        private double findValue(int source, int target, double totalVal)
-        {
-            double total = 0.0;
-
-            if (source == target) return totalVal;
-            else if (parents[source] != source)
-            {
-                total = totalVal * graph[parents[source]][source];
-                return findValue(parents[source], target, total);
-            }
-
-            return 0.0;
         }
     }
 }
