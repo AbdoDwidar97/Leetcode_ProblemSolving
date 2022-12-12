@@ -14,22 +14,21 @@ public class MostStonesRemovedWithSameRowOrColumn
     {
         public int removeStones(int[][] stones)
         {
-            int numOfStones = 0;
-            HashSet<Integer> xSet = new HashSet<>();
-            HashSet<Integer> ySet = new HashSet<>();
+            if (stones.length == 1) return 0;
 
-            for (int[] stone : stones)
+            int maxRemoves = 0;
+            for (int i = 0; i < stones.length; i++)
             {
-                int x = stone[0];
-                int y = stone[1];
+                int[] currentStone = stones[i];
+                for (int j = i + 1; j < stones.length; j++)
+                {
+                    int[] otherStone = stones[j];
 
-                if (xSet.contains(x) || ySet.contains(y)) numOfStones++;
-
-                xSet.add(x);
-                ySet.add(y);
+                    if (currentStone[0] == otherStone[0] || currentStone[1] == otherStone[1]) maxRemoves++;
+                }
             }
 
-            return numOfStones;
+            return maxRemoves - 1;
         }
     }
 }
