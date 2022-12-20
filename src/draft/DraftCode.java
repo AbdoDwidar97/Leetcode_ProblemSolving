@@ -23,7 +23,7 @@ public class DraftCode
 
         System.out.println(arr.indexOf(6));*/
 
-        HashMap<Integer, Integer> map1 = new HashMap<>();
+        /*HashMap<Integer, Integer> map1 = new HashMap<>();
         map1.put(1, 0);
         map1.put(2, 0);
 
@@ -31,7 +31,8 @@ public class DraftCode
         map2.put(1, 1);
         map2.put(2, 0);
 
-        map1.remove(map2);
+        map1.remove(map2);*/
 
+        System.out.println(7 % 5);
     }
 }

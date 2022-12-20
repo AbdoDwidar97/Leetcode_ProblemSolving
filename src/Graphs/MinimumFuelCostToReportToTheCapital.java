@@ -7,37 +7,21 @@ public class MinimumFuelCostToReportToTheCapital
     public static void main(String[] args)
     {
         Solution solution = new Solution();
-        // System.out.println(solution.minimumFuelCost(new int[][]{{3,1},{3,2},{1,0},{0,4},{0,5},{4,6}}, 2));
-        System.out.println(solution.minimumFuelCost(new int[][]{}, 1));
+        //System.out.println(solution.minimumFuelCost(new int[][]{{0,1},{0,2},{0,3}}, 5));
+        System.out.println(solution.minimumFuelCost(new int[][]{{3,1},{3,2},{1,0},{0,4},{0,5},{4,6}}, 2));
+        //System.out.println(solution.minimumFuelCost(new int[][]{}, 1));
+        //System.out.println(solution.minimumFuelCost(new int[][]{{1,0},{0,2},{3,1},{1,4},{5,0}}, 1));
     }
 
     private static class Solution
     {
-        HashMap<Integer, Integer> citiesRank = new HashMap<>();
-        Queue<Integer> startCities = new ArrayDeque<>();
-        boolean[] goneRepresentatives;
-
+        private long minLitters = 0;
         public long minimumFuelCost(int[][] roads, int seats)
         {
             if (roads.length == 0) return 0;
-            long minLiters = 0;
-
-            goneRepresentatives = new boolean[roads.length + 1];
-
             ArrayList<Integer>[] graph = buildGraph(roads);
-
-            for (int i = 0; i <= roads.length; i++)
-            {
-                if (citiesRank.get(i) == 1) startCities.add(i);
-            }
-
-            while (!startCities.isEmpty())
-            {
-                int city = startCities.poll();
-                minLiters += dfsTravel(graph, city, seats, 0, new HashSet<>());
-            }
-
-            return minLiters;
+            dfsTravel(graph, 0, seats, 0, new HashSet<>());
+            return minLitters;
         }
 
         private ArrayList<Integer>[] buildGraph(int[][] roads)
@@ -52,43 +36,43 @@ public class MinimumFuelCostToReportToTheCapital
 
                 graph[a].add(b);
                 graph[b].add(a);
-
-                if (citiesRank.containsKey(a)) citiesRank.put(a, citiesRank.get(a) + 1);
-                else citiesRank.put(a, 1);
-
-                if (citiesRank.containsKey(b)) citiesRank.put(b, citiesRank.get(b) + 1);
-                else citiesRank.put(b, 1);
             }
 
             return graph;
         }
 
-        private long dfsTravel(ArrayList<Integer>[] graph, int city, int availSeat, int liters, HashSet<Integer> visited)
+        private int dfsTravel(ArrayList<Integer>[] graph, int currentCity, int seats, int distance, HashSet<Integer> visited)
         {
-            visited.add(city);
-            if (city == 0) return liters;
+            visited.add(currentCity);
 
-            int seat = availSeat;
-            if (availSeat == 0)
+            ArrayList<Integer> children = graph[currentCity];
+
+            int people = 1;
+            for (int cty : children)
             {
-                startCities.add(city);
-                seat = -1;
-            }
-            else if (availSeat > 0 && !goneRepresentatives[city])
-            {
-                seat--;
-                goneRepresentatives[city] = true;
+                if (!visited.contains(cty))
+                    people += dfsTravel(graph, cty, seats, distance + 1, visited);
             }
 
-            ArrayList<Integer> children = graph[city];
+            if (currentCity == 0) return 0;
 
-            long myLiters = 0;
-            for (Integer cty : children)
+            if (people < seats)
             {
-                if (!visited.contains(cty)) myLiters += dfsTravel(graph, cty, seat, liters + 1, visited);
+                minLitters++;
+                return people;
             }
 
-            return myLiters;
+            int carsNumber = people / seats;
+            minLitters += (long) carsNumber * distance;
+
+            int additionalPeople = people % seats;
+
+            if (additionalPeople == 0) return 0;
+            else
+            {
+                minLitters++;
+                return additionalPeople;
+            }
         }
     }
 }
