@@ -1,5 +1,5 @@
 package Graphs;
-import java.util.HashSet;
+import java.util.*;
 
 public class NetworkDelayTime
 {
@@ -11,17 +11,76 @@ public class NetworkDelayTime
 
     private static class Solution
     {
+        class Node
+        {
+            int node;
+            int distance;
+
+            public Node(){}
+            public Node(int node, int distance)
+            {
+                this.node = node;
+                this.distance = distance;
+            }
+
+            public int getNode() {
+                return node;
+            }
+
+            public void setNode(int node) {
+                this.node = node;
+            }
+
+            public int getDistance() {
+                return distance;
+            }
+
+            public void setDistance(int distance) {
+                this.distance = distance;
+            }
+        }
+
         public int networkDelayTime(int[][] times, int n, int k)
         {
             int[][] graph = createGraph(times, n);
-            int[] dist = new int[n];
+            PriorityQueue<Node> dist = new PriorityQueue<>(new Comparator<Node>()
+            {
+                @Override
+                public int compare(Node o1, Node o2)
+                {
+                    if (o1.distance > o2.distance) return 1;
+                    else if (o1.distance < o2.distance) return -1;
+                    return 0;
+                }
+            });
+
             for (int i = 0; i < n; i++)
             {
-                if (i == k - 1) dist[i] = 0;
-                else dist[i] = 101;
+                if (i == k - 1) dist.add(new Node(i, 0));
+                else dist.add(new Node(i, Integer.MAX_VALUE));
             }
 
-            return dfsDijkstra(graph, dist, k - 1, 0, new HashSet<>());
+            Node currentNode = dist.poll();
+
+            while (!dist.isEmpty())
+            {
+                Node[] distances = dist.toArray(new Node[dist.size()]);
+
+                for (Node next : distances)
+                {
+                    if (graph[currentNode.node][next.node] >= 0)
+                    {
+                        Node nextNode = new Node(next.node, Math.min(next.distance, currentNode.distance + graph[currentNode.node][next.node]));
+                        dist.remove(next);
+                        dist.add(nextNode);
+                    }
+                }
+
+                currentNode = dist.poll();
+                if (currentNode.distance == Integer.MAX_VALUE) return -1;
+            }
+
+            return currentNode.distance;
         }
 
         private int[][] createGraph(int[][] times, int n)
@@ -44,29 +103,6 @@ public class NetworkDelayTime
             }
 
             return graph;
-        }
-
-        private int dfsDijkstra(int[][] graph, int[] dist, int currentNode, int distance, HashSet<Integer> visited)
-        {
-            /// Working on ....
-            visited.add(currentNode);
-
-            int longestPath = 0;
-
-            for (int i = 0; i < graph.length; i++)
-            {
-                if (!visited.contains(i) && graph[currentNode][i] >= 0)
-                {
-                    dist[i] = Math.min(dist[i], distance + graph[currentNode][i]);
-                }
-            }
-
-            for (int i = 0; i < graph.length; i++)
-            {
-
-            }
-
-            return 0;
         }
     }
 }
