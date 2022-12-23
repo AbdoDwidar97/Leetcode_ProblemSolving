@@ -36,7 +36,7 @@ public class DraftCode
 
         // System.out.println(7 % 5);
 
-        PriorityQueue<Integer> q = new PriorityQueue<>();
+        /*PriorityQueue<Integer> q = new PriorityQueue<>();
 
         q.add(12);
         q.add(200);
@@ -45,6 +45,9 @@ public class DraftCode
         q.add(14);
         q.add(1001);
 
-        System.out.println(q.poll());
+        System.out.println(q.poll());*/
+
+        int[][] arr = new int[][]{{1, 1}, {2, 1, 1, 1}, {7, 12, 6}, {4}};
+
     }
 }
