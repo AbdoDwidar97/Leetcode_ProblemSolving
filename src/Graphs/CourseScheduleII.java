@@ -23,15 +23,14 @@ public class CourseScheduleII
         public int[] findOrder(int numCourses, int[][] prerequisites)
         {
             ArrayList<Integer> courses = new ArrayList<>();
+            HashSet<Integer> availCourses = new HashSet<>();
 
-            if (prerequisites.length == 0)
-            {
-                for (int i = 0; i < numCourses; i++) courses.add(i);
-
-                return courses.stream().mapToInt(Integer::intValue).toArray();
-            }
+            for (int i = 0; i < numCourses; i++) availCourses.add(i);
 
             ArrayList<Integer>[] graph = createGraph(numCourses, prerequisites);
+
+            if (findCycle(graph, find(0), new HashSet<>())) return new int[]{};
+
             HashSet<Integer> visited = new HashSet<>();
             Queue<Integer> unvisited = new ArrayDeque<>();
 
@@ -45,6 +44,7 @@ public class CourseScheduleII
                 {
                     visited.add(currentCourse);
                     courses.add(currentCourse);
+                    availCourses.remove(currentCourse);
 
                     ArrayList<Integer> children = graph[currentCourse];
 
@@ -55,6 +55,7 @@ public class CourseScheduleII
                 }
             }
 
+            courses.addAll(availCourses);
             return courses.stream().mapToInt(Integer::intValue).toArray();
         }
 
@@ -94,6 +95,23 @@ public class CourseScheduleII
             int parentRoot = find(parent);
 
             parents[nodeRoot] = parentRoot;
+        }
+
+        private boolean findCycle(ArrayList<Integer>[] graph, int currentNode, HashSet<Integer> visited)
+        {
+            HashSet<Integer> myVisited = new HashSet<>(visited);
+            myVisited.add(currentNode);
+
+            ArrayList<Integer> children = graph[currentNode];
+
+            boolean result = false;
+            for (int child : children)
+            {
+                if (myVisited.contains(child)) return true;
+                else result = result || findCycle(graph, child, myVisited);
+            }
+
+            return result;
         }
     }
 }
