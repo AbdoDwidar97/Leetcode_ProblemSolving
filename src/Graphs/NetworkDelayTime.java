@@ -1,8 +1,5 @@
 package Graphs;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.*;
 
 public class NetworkDelayTime
 {
@@ -14,51 +11,76 @@ public class NetworkDelayTime
 
     private static class Solution
     {
+        class Node
+        {
+            int node;
+            int distance;
+
+            public Node(){}
+            public Node(int node, int distance)
+            {
+                this.node = node;
+                this.distance = distance;
+            }
+
+            public int getNode() {
+                return node;
+            }
+
+            public void setNode(int node) {
+                this.node = node;
+            }
+
+            public int getDistance() {
+                return distance;
+            }
+
+            public void setDistance(int distance) {
+                this.distance = distance;
+            }
+        }
+
         public int networkDelayTime(int[][] times, int n, int k)
         {
-            int minTime = 0;
-            HashSet<Integer> visited = new HashSet<>();
-            visited.add(k);
-
-            int[] dist = new int[n];
-
             int[][] graph = createGraph(times, n);
+            PriorityQueue<Node> dist = new PriorityQueue<>(new Comparator<Node>()
+            {
+                @Override
+                public int compare(Node o1, Node o2)
+                {
+                    if (o1.distance > o2.distance) return 1;
+                    else if (o1.distance < o2.distance) return -1;
+                    return 0;
+                }
+            });
 
             for (int i = 0; i < n; i++)
             {
-                if (i == k) dist[i] = 0;
-                else dist[i] = 101;
+                if (i == k - 1) dist.add(new Node(i, 0));
+                else dist.add(new Node(i, Integer.MAX_VALUE));
             }
 
-            int currentNode = k - 1;
-            while (visited.size() < n)
+            Node currentNode = dist.poll();
+
+            while (!dist.isEmpty())
             {
-                int [] nextNodes = graph[currentNode];
+                Node[] distances = dist.toArray(new Node[dist.size()]);
 
-                int minDist = 101;
-                int nextNode = 0;
-                for (int next = 0; next < n; next++)
+                for (Node next : distances)
                 {
-                    if (next != currentNode && !visited.contains(next) && graph[currentNode][next] != -1)
+                    if (graph[currentNode.node][next.node] >= 0)
                     {
-                        dist[next] = Math.min(dist[next], minTime + graph[currentNode][next]);
-
-                        if (minDist > dist[next])
-                        {
-                            minDist = dist[next];
-                            nextNode = next;
-                        }
+                        Node nextNode = new Node(next.node, Math.min(next.distance, currentNode.distance + graph[currentNode.node][next.node]));
+                        dist.remove(next);
+                        dist.add(nextNode);
                     }
                 }
 
-                visited.add(currentNode);
-                if (visited.size() == n) return minTime;
-
-                currentNode = nextNode;
-                minTime += minDist;
+                currentNode = dist.poll();
+                if (currentNode.distance == Integer.MAX_VALUE) return -1;
             }
 
-            return minTime;
+            return currentNode.distance;
         }
 
         private int[][] createGraph(int[][] times, int n)
@@ -82,6 +104,5 @@ public class NetworkDelayTime
 
             return graph;
         }
-
     }
 }
