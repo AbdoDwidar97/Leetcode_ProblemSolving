@@ -26,17 +26,19 @@ public class CourseScheduleII
 
             ArrayList<Integer> result = new ArrayList<>();
 
-            while (!availCourses.isEmpty())
+            for (int i = 0; i < numCourses; i++)
             {
-                int start = availCourses.stream().findFirst().get();
-                ArrayList<Integer> res = dfsFindOrder(graph, start, new HashSet<>());
-
-                if (res.isEmpty()) return new int[]{};
-
-                result.addAll(res);
+                if (availCourses.contains(i))
+                {
+                    ArrayList<Integer> res = dfsFindOrder(graph, i, new HashSet<>());
+                    if (res.isEmpty()) return new int[]{};
+                    result.addAll(res);
+                }
             }
 
-            return result.stream().mapToInt(Integer::intValue).toArray();
+            int[] allResults = new int[result.size()];
+            Arrays.setAll(allResults, result::get);
+            return allResults;
         }
 
         private ArrayList<Integer>[] createGraphAndSetupAvailCourses(int numCourses, int[][] prerequisites)
