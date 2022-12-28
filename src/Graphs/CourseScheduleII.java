@@ -8,65 +8,47 @@ public class CourseScheduleII
     {
         Solution solution = new Solution();
 
-        /*int[] res = solution.findOrder(4, new int[][]{{1,0},{2,0},{3,1},{3,2}});
-        Arrays.stream(res).forEach(System.out::println);*/
+        int[] res = solution.findOrder(4, new int[][]{{1,0},{2,0},{3,1},{3,2}});
+        Arrays.stream(res).forEach(System.out::println);
 
         /// this example should return empty array, but the result is wrong ....
-        int[] res = solution.findOrder(2, new int[][]{{1,0},{0,1}});
-        Arrays.stream(res).forEach(System.out::println);
+        /*int[] res = solution.findOrder(2, new int[][]{{1,0},{0,1}});
+        Arrays.stream(res).forEach(System.out::println);*/
 
     }
 
     private static class Solution
     {
-        int[] parents;
+        private HashSet<Integer> availCourses = new HashSet<>();
         public int[] findOrder(int numCourses, int[][] prerequisites)
         {
-            ArrayList<Integer> courses = new ArrayList<>();
+            ArrayList<Integer>[] graph = createGraphAndSetupAvailCourses(numCourses, prerequisites);
 
-            if (prerequisites.length == 0)
+            ArrayList<Integer> result = new ArrayList<>();
+
+            for (int i = 0; i < numCourses; i++)
             {
-                for (int i = 0; i < numCourses; i++) courses.add(i);
-
-                return courses.stream().mapToInt(Integer::intValue).toArray();
-            }
-
-            ArrayList<Integer>[] graph = createGraph(numCourses, prerequisites);
-            HashSet<Integer> visited = new HashSet<>();
-            Queue<Integer> unvisited = new ArrayDeque<>();
-
-            unvisited.add(find(0));
-
-            while (!unvisited.isEmpty())
-            {
-                int currentCourse = unvisited.poll();
-
-                if (!visited.contains(currentCourse))
+                if (availCourses.contains(i))
                 {
-                    visited.add(currentCourse);
-                    courses.add(currentCourse);
-
-                    ArrayList<Integer> children = graph[currentCourse];
-
-                    for (int child : children)
-                    {
-                        if (!visited.contains(child)) unvisited.add(child);
-                    }
+                    ArrayList<Integer> res = dfsFindOrder(graph, i, new HashSet<>());
+                    if (res.isEmpty()) return new int[]{};
+                    result.addAll(res);
                 }
             }
 
-            return courses.stream().mapToInt(Integer::intValue).toArray();
+            int[] allResults = new int[result.size()];
+            Arrays.setAll(allResults, result::get);
+            return allResults;
         }
 
-        private ArrayList<Integer>[] createGraph(int numCourses, int[][] prerequisites)
+        private ArrayList<Integer>[] createGraphAndSetupAvailCourses(int numCourses, int[][] prerequisites)
         {
             ArrayList<Integer>[] graph = new ArrayList[numCourses];
-            parents = new int[numCourses];
 
             for (int i = 0; i < numCourses; i++)
             {
                 graph[i] = new ArrayList<>();
-                parents[i] = i;
+                availCourses.add(i);
             }
 
             for (int[] edge : prerequisites)
@@ -74,26 +56,36 @@ public class CourseScheduleII
                 int a = edge[0];
                 int b = edge[1];
 
-                graph[b].add(a);
-
-                if (find(a) != find(b)) union(a, b);
+                graph[a].add(b);
             }
 
             return graph;
         }
 
-        private int find(int node)
+        private ArrayList<Integer> dfsFindOrder(ArrayList<Integer>[] graph, int currentNode, HashSet<Integer> visited)
         {
-            if (parents[node] == node) return parents[node];
-            return find(parents[node]);
-        }
+            HashSet<Integer> myVisited = new HashSet<>(visited);
+            myVisited.add(currentNode);
 
-        private void union(int node, int parent)
-        {
-            int nodeRoot = find(node);
-            int parentRoot = find(parent);
+            ArrayList<Integer> children = graph[currentNode];
 
-            parents[nodeRoot] = parentRoot;
+            ArrayList<Integer> result = new ArrayList<>();
+            for (int course : children)
+            {
+                if (visited.contains(course)) return new ArrayList<>();
+                if (availCourses.contains(course))
+                {
+                    ArrayList<Integer> res = dfsFindOrder(graph, course, myVisited);
+                    if (res.isEmpty()) return res;
+
+                    result.addAll(res);
+                }
+            }
+
+            result.add(currentNode);
+            availCourses.remove(currentNode);
+
+            return result;
         }
     }
 }
