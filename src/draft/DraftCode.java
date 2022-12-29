@@ -3,6 +3,7 @@ package draft;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.PriorityQueue;
 
 public class DraftCode
 {
@@ -33,6 +34,20 @@ public class DraftCode
 
         map1.remove(map2);*/
 
-        System.out.println(7 % 5);
+        // System.out.println(7 % 5);
+
+        /*PriorityQueue<Integer> q = new PriorityQueue<>();
+
+        q.add(12);
+        q.add(200);
+        q.add(0);
+        q.add(-20);
+        q.add(14);
+        q.add(1001);
+
+        System.out.println(q.poll());*/
+
+        int[][] arr = new int[][]{{1, 1}, {2, 1, 1, 1}, {7, 12, 6}, {4}};
+
     }
 }
