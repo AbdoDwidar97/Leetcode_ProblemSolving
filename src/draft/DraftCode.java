@@ -47,7 +47,8 @@ public class DraftCode
 
         System.out.println(q.poll());*/
 
-        int[][] arr = new int[][]{{1, 1}, {2, 1, 1, 1}, {7, 12, 6}, {4}};
+        // int[][] arr = new int[][]{{1, 1}, {2, 1, 1, 1}, {7, 12, 6}, {4}};
 
+        System.out.println(29 % 10);
     }
 }
