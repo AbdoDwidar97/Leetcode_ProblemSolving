@@ -7,8 +7,8 @@ public class MinimumSubsequenceInNonIncreasingOrder
     public static void main(String[] args)
     {
         Solution solution = new Solution();
-        //List<Integer> res = solution.minSubsequence(new int[]{4,3,10,9,8});
-        List<Integer> res = solution.minSubsequence(new int[]{8,8});
+        List<Integer> res = solution.minSubsequence(new int[]{4,3,10,9,8});
+        // List<Integer> res = solution.minSubsequence(new int[]{8,8});
         res.forEach(System.out::println);
     }
 
