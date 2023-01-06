@@ -49,6 +49,8 @@ public class DraftCode
 
         // int[][] arr = new int[][]{{1, 1}, {2, 1, 1, 1}, {7, 12, 6}, {4}};
 
-        System.out.println(29 % 10);
+        // System.out.println(29 % 10);
+
+        System.out.println(61 % 60);
     }
 }
