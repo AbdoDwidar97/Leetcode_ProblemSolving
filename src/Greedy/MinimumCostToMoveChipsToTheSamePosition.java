@@ -1,5 +1,7 @@
 package Greedy;
 
+import java.util.HashMap;
+
 public class MinimumCostToMoveChipsToTheSamePosition
 {
     public static void main(String[] args)
@@ -12,8 +14,15 @@ public class MinimumCostToMoveChipsToTheSamePosition
     {
         public int minCostToMoveChips(int[] position)
         {
-            /// Working with this ....
-            return 0;
+            int evens = 0, odds = 0;
+
+            for (int chip : position)
+            {
+                if (chip % 2 == 0) evens++;
+                else odds++;
+            }
+
+            return Math.min(evens, odds);
         }
     }
 }
