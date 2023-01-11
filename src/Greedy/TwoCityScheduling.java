@@ -1,5 +1,9 @@
 package Greedy;
 
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.PriorityQueue;
+
 public class TwoCityScheduling
 {
     public static void main(String[] args)
@@ -13,24 +17,31 @@ public class TwoCityScheduling
     {
         public int twoCitySchedCost(int[][] costs)
         {
-            int aCost = dfsGetMinCost(costs, 0, 0, 0, 0);
-            int bCost = dfsGetMinCost(costs, 0, 0, 0, 0);
+            int n = costs.length / 2;
+            int minCost = 0;
+            PriorityQueue<Integer[]> myQueue = new PriorityQueue<>(new Comparator<Integer[]>() {
+                @Override
+                public int compare(Integer[] o1, Integer[] o2) {
+                    if (o1[1] > o2[1]) return 1;
+                    else if (o1[1] < o2[1]) return -1;
+                    return 0;
+                }
+            });
 
-            return Math.min(aCost, bCost);
-        }
+            for (int i = 0; i < costs.length; i++)
+                myQueue.add(new Integer[]{i, costs[i][1] - costs[i][0]});
 
-        private int dfsGetMinCost(int[][] costs, int currentIdx, int totalCost, int aLngth, int bLngth)
-        {
-            if (currentIdx == costs.length)
+            int time = 0;
+            while (!myQueue.isEmpty())
             {
-                if (aLngth == bLngth) return totalCost;
-                else return Integer.MAX_VALUE;
+                Integer[] diff = myQueue.poll();
+                if (time < n) minCost += costs[diff[0]][1];
+                else minCost += costs[diff[0]][0];
+
+                time++;
             }
 
-            int costA = dfsGetMinCost(costs, currentIdx + 1, totalCost + costs[currentIdx][0], aLngth + 1, bLngth);
-            int costB = dfsGetMinCost(costs, currentIdx + 1, totalCost + costs[currentIdx][1], aLngth, bLngth + 1);
-
-            return Math.min(costA, costB);
+            return minCost;
         }
     }
 }
