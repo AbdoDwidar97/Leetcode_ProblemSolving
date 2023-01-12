@@ -1,9 +1,6 @@
 package draft;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class DraftCode
 {
@@ -51,6 +48,16 @@ public class DraftCode
 
         // System.out.println(29 % 10);
 
-        System.out.println(61 % 60);
+        // System.out.println(61 % 60);
+
+        /// Copy array by reference
+        int[] h5a1 = new int[]{1, 2, 3};
+        int[] h5a2 = h5a1.clone();
+
+        h5a2[0] = 60;
+
+        Arrays.stream(h5a1).forEach(System.out::println);
+        System.out.println("----------------");
+        Arrays.stream(h5a2).forEach(System.out::println);
     }
 }
