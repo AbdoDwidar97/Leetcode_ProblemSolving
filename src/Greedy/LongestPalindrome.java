@@ -1,43 +1,70 @@
 package Greedy;
 
+import java.util.HashMap;
+
 public class LongestPalindrome
 {
     public static void main(String[] args)
     {
         Solution solution = new Solution();
-        System.out.println(solution.longestPalindrome("abccccdd"));
-        System.out.println(solution.longestPalindrome("a"));
+        //System.out.println(solution.longestPalindrome("abccccdd"));
+        //System.out.println(solution.longestPalindrome("a"));
+        System.out.println(solution.longestPalindrome("civilwartestingwhetherthatnaptionoranynartionsoconceivedandsodedicatedcanlongendureWeareqmetonagreatbattlefiemldoftzhatwarWehavecometodedicpateaportionofthatfieldasafinalrestingplaceforthosewhoheregavetheirlivesthatthatnationmightliveItisaltogetherfangandproperthatweshoulddothisButinalargersensewecannotdedicatewecannotconsecratewecannothallowthisgroundThebravelmenlivinganddeadwhostruggledherehaveconsecrateditfaraboveourpoorponwertoaddordetractTgheworldadswfilllittlenotlenorlongrememberwhatwesayherebutitcanneverforgetwhattheydidhereItisforusthelivingrathertobededicatedheretotheulnfinishedworkwhichtheywhofoughtherehavethusfarsonoblyadvancedItisratherforustobeherededicatedtothegreattdafskremainingbeforeusthatfromthesehonoreddeadwetakeincreaseddevotiontothatcauseforwhichtheygavethelastpfullmeasureofdevotionthatweherehighlyresolvethatthesedeadshallnothavediedinvainthatthisnationunsderGodshallhaveanewbirthoffreedomandthatgovernmentofthepeoplebythepeopleforthepeopleshallnotperishfromtheearth"));
     }
 
     private static class Solution
     {
         public int longestPalindrome(String s)
         {
-            if (s.length() == 1) return 1;
-
+            /// Characters degree way -> Super fast way
             int longestPalindrome = 0;
+            HashMap<Character, Integer> charsDegree = new HashMap<>();
+
             for (int i = 0; i < s.length(); i++)
             {
-                int evenCase = checkPalindromeFromMiddle(s, i, i + 1);
-                int oddCase = checkPalindromeFromMiddle(s, i, i);
-
-                longestPalindrome = Math.max(longestPalindrome, Math.max(evenCase, oddCase));
+                char chr = s.charAt(i);
+                if (charsDegree.containsKey(chr)) charsDegree.put(chr, charsDegree.get(chr) + 1);
+                else charsDegree.put(chr, 1);
             }
 
-            return longestPalindrome + 1;
-        }
-
-        private int checkPalindromeFromMiddle(String s, int left, int right)
-        {
-            if (left > right) return 0;
-            while (left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right))
+            int maxOdd = 0;
+            for (int degree : charsDegree.values())
             {
-                left--;
-                right++;
+                if (degree % 2 == 0) longestPalindrome += degree;
+                else maxOdd = Math.max(maxOdd, degree);
             }
 
-            return right - left + 1;
+            return longestPalindrome + maxOdd;
         }
 
+        /// DFS Way -> Inefficient
+        private int dfsFindLongestPalindrome(String s, String buffer)
+        {
+            int longestPalindrome = 0;
+            if (isPalindrome(buffer)) longestPalindrome = buffer.length();
+
+            for (int i = 0; i < s.length(); i++)
+            {
+                String myBuffer = buffer + s.charAt(i);
+                String myString = new StringBuilder(s).deleteCharAt(i).toString();
+                int palindromeLength = dfsFindLongestPalindrome(myString, myBuffer);
+                longestPalindrome = Math.max(longestPalindrome, palindromeLength);
+            }
+
+            return longestPalindrome;
+        }
+
+        private boolean isPalindrome(String str)
+        {
+            if (str.isEmpty()) return false;
+
+            int lngth = str.length();
+            for (int i = 0; i < lngth / 2; i++)
+            {
+                if (str.charAt(i) != str.charAt(lngth - 1 - i)) return false;
+            }
+
+            return true;
+        }
     }
 }
