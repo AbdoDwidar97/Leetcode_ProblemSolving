@@ -7,8 +7,8 @@ public class LongestPalindrome
     public static void main(String[] args)
     {
         Solution solution = new Solution();
-        //System.out.println(solution.longestPalindrome("abccccdd"));
-        //System.out.println(solution.longestPalindrome("a"));
+        System.out.println(solution.longestPalindrome("abccccdd"));
+        System.out.println(solution.longestPalindrome("a"));
         System.out.println(solution.longestPalindrome("civilwartestingwhetherthatnaptionoranynartionsoconceivedandsodedicatedcanlongendureWeareqmetonagreatbattlefiemldoftzhatwarWehavecometodedicpateaportionofthatfieldasafinalrestingplaceforthosewhoheregavetheirlivesthatthatnationmightliveItisaltogetherfangandproperthatweshoulddothisButinalargersensewecannotdedicatewecannotconsecratewecannothallowthisgroundThebravelmenlivinganddeadwhostruggledherehaveconsecrateditfaraboveourpoorponwertoaddordetractTgheworldadswfilllittlenotlenorlongrememberwhatwesayherebutitcanneverforgetwhattheydidhereItisforusthelivingrathertobededicatedheretotheulnfinishedworkwhichtheywhofoughtherehavethusfarsonoblyadvancedItisratherforustobeherededicatedtothegreattdafskremainingbeforeusthatfromthesehonoreddeadwetakeincreaseddevotiontothatcauseforwhichtheygavethelastpfullmeasureofdevotionthatweherehighlyresolvethatthesedeadshallnothavediedinvainthatthisnationunsderGodshallhaveanewbirthoffreedomandthatgovernmentofthepeoplebythepeopleforthepeopleshallnotperishfromtheearth"));
     }
 
@@ -27,14 +27,19 @@ public class LongestPalindrome
                 else charsDegree.put(chr, 1);
             }
 
-            int maxOdd = 0;
+            boolean odds = false;
             for (int degree : charsDegree.values())
             {
                 if (degree % 2 == 0) longestPalindrome += degree;
-                else maxOdd = Math.max(maxOdd, degree);
+                else
+                {
+                    odds = true;
+                    if (degree > 1) longestPalindrome += degree - 1;
+                }
             }
 
-            return longestPalindrome + maxOdd;
+            if (odds) return longestPalindrome + 1;
+            return longestPalindrome;
         }
 
         /// DFS Way -> Inefficient
