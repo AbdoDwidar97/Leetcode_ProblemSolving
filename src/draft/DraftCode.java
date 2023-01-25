@@ -51,13 +51,19 @@ public class DraftCode
         // System.out.println(61 % 60);
 
         /// Copy array by reference
-        int[] h5a1 = new int[]{1, 2, 3};
+        /*int[] h5a1 = new int[]{1, 2, 3};
         int[] h5a2 = h5a1.clone();
 
         h5a2[0] = 60;
 
         Arrays.stream(h5a1).forEach(System.out::println);
         System.out.println("----------------");
-        Arrays.stream(h5a2).forEach(System.out::println);
+        Arrays.stream(h5a2).forEach(System.out::println);*/
+
+        Random rand = new Random();
+
+        int rnd = (int) rand.nextDouble(1, 4);
+
+        System.out.println(rnd);
     }
 }
