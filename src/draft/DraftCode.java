@@ -59,11 +59,5 @@ public class DraftCode
         Arrays.stream(h5a1).forEach(System.out::println);
         System.out.println("----------------");
         Arrays.stream(h5a2).forEach(System.out::println);*/
-
-        Random rand = new Random();
-
-        int rnd = (int) rand.nextDouble(1, 4);
-
-        System.out.println(rnd);
     }
 }
