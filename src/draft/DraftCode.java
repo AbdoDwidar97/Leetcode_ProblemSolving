@@ -59,5 +59,14 @@ public class DraftCode
         Arrays.stream(h5a1).forEach(System.out::println);
         System.out.println("----------------");
         Arrays.stream(h5a2).forEach(System.out::println);*/
+
+        // System.out.println(Integer.toBinaryString((int) Math.pow(10, 5)).length());
+        int var = 5;
+        while (var > 0)
+        {
+            System.out.println(var & 1);
+            var = var >> 1;
+        }
+
     }
 }
