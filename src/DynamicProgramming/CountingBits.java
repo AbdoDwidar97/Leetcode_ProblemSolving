@@ -54,10 +54,7 @@ public class CountingBits
         private int count(int[] ans, int num)
         {
             if (ans[num] == -1)
-            {
-                int cnt = count(ans, num >> 1);
-                ans[num] = cnt + (num & 1);
-            }
+                ans[num] = count(ans, num >> 1) + (num & 1);
 
             return ans[num];
         }
