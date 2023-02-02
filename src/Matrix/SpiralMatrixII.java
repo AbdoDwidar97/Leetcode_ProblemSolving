@@ -7,7 +7,7 @@ public class SpiralMatrixII
     public static void main(String[] args)
     {
         Solution solution = new Solution();
-        int[][] result = solution.generateMatrix(3);
+        int[][] result = solution.generateMatrix(4);
         for (int[] row : result)
         {
             Arrays.stream(row).forEach(System.out::println);
@@ -31,7 +31,6 @@ public class SpiralMatrixII
                 while (col < n - 1 && result[row][col + 1] == 0)
                 {
                     result[row][col] = counter++;
-                    if (counter == Math.pow(n, 2)) return result;
                     col++;
                 }
 
@@ -39,7 +38,6 @@ public class SpiralMatrixII
                 while (row < n - 1 && result[row + 1][col] == 0)
                 {
                     result[row][col] = counter++;
-                    if (counter == Math.pow(n, 2)) return result;
                     row++;
                 }
 
@@ -47,7 +45,6 @@ public class SpiralMatrixII
                 while (col > 0 && result[row][col - 1] == 0)
                 {
                     result[row][col] = counter++;
-                    if (counter == Math.pow(n, 2)) return result;
                     col--;
                 }
 
@@ -55,10 +52,10 @@ public class SpiralMatrixII
                 while (row > 0 && result[row - 1][col] == 0)
                 {
                     result[row][col] = counter++;
-                    if (counter == Math.pow(n, 2)) return result;
                     row--;
                 }
 
+                if (counter == Math.pow(n, 2)) result[row][col] = counter++;
             }
 
             return result;
