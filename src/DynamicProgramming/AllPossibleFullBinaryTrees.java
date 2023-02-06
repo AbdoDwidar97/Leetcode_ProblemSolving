@@ -6,7 +6,7 @@ public class AllPossibleFullBinaryTrees
 {
     public static void main(String[] args)
     {
-
+        /// we should solve this by recursion ...
     }
 
     private static class Solution
