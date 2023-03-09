@@ -2,6 +2,7 @@ package DynamicProgramming;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.PriorityQueue;
 import java.util.Queue;
 
 public class ZeroOneMatrix
@@ -23,6 +24,8 @@ public class ZeroOneMatrix
                 {1,1,1,1,1,1,1,0,1,0},
                 {1,1,1,1,0,1,0,0,1,1}
         });
+
+        // int[][] res = solution.updateMatrix(new int[][]{{0}, {1}});
 
         for (int[] row : res)
         {
@@ -54,7 +57,6 @@ public class ZeroOneMatrix
                 {
                     if (table[r][c] == -1)
                     {
-                        // dfsShortestDistance(mat, table, r, c, new boolean[m][n]);
                         bfsShortestDistance(mat, table, r, c);
                     }
                 }
@@ -69,11 +71,33 @@ public class ZeroOneMatrix
             Queue<Integer[]> unvisited = new ArrayDeque<>();
 
             unvisited.add(new Integer[]{r, c, 0});
+            visited[r][c] = true;
 
+            int currentLevel = 0;
+            int minDist = Integer.MAX_VALUE;
             while (!unvisited.isEmpty())
             {
                 Integer[] cell = unvisited.poll();
                 int row = cell[0], column = cell[1], dist = cell[2];
+
+                if (currentLevel == dist)
+                {
+                    if (table[row][column] != -1)
+                    {
+                        minDist = Math.min(minDist, table[row][column] + dist);
+                    }
+
+                }else
+                {
+                    currentLevel = dist;
+                    if (minDist != Integer.MAX_VALUE)
+                    {
+                        table[r][c] = minDist;
+                        return;
+                    }
+
+                    if (table[row][column] != -1) minDist = table[row][column] + dist;
+                }
 
                 // left
                 if (column - 1 >= 0 && !visited[row][column - 1])
@@ -102,8 +126,11 @@ public class ZeroOneMatrix
                     unvisited.add(new Integer[]{row + 1, column, dist + 1});
                     visited[row + 1][column] = true;
                 }
+            }
 
-
+            if (minDist != Integer.MAX_VALUE)
+            {
+                table[r][c] = minDist;
             }
         }
 
